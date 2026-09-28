@@ -8,6 +8,12 @@ const createButtons = [
 ];
 
 function setStatus(message) { statusElement.textContent = message; }
+let reportGeneration = 0;
+function clearReport() {
+  reportGeneration += 1;
+  reportElement.textContent = "";
+  reportVersionElement.textContent = "CAM report v—";
+}
 extensionVersionElement.textContent = "Extension v" + chrome.runtime.getManifest().version;
 function call(action, extra = {}) {
   return new Promise(resolve => chrome.runtime.sendMessage({ action, ...extra }, data => {
@@ -21,19 +27,31 @@ async function activeCamIds() {
   return { tabId: tab.id, documentId: match[1], workspaceId: match[2], elementId: match[3] };
 }
 async function showCamSettings() {
-  reportElement.textContent = "";
-  reportVersionElement.textContent = "CAM report v—";
+  clearReport();
+  const generation = reportGeneration;
   setStatus("Reading the active CAM Studio tab...");
   try {
-    const data = await call("report", await activeCamIds());
+    const ids = await activeCamIds();
+    const data = await call("report", ids);
+    if (generation !== reportGeneration) return;
+    const current = await activeCamIds();
+    if (generation !== reportGeneration) return;
+    if (ids.tabId !== current.tabId || ids.documentId !== current.documentId ||
+        ids.workspaceId !== current.workspaceId || ids.elementId !== current.elementId) {
+      clearReport();
+      setStatus("Active CAM Studio changed. Click Run Checker again.");
+      return;
+    }
     if (!data || data.error) throw new Error(data?.error || "No response from Apps Script.");
     if (typeof data.reportText !== "string") throw new Error("Apps Script did not return a CAM report. Deploy the latest Code.gs and CamReport.gs.");
     reportVersionElement.textContent = "CAM report v" + data.reportVersion;
     reportElement.textContent = data.reportText;
     setStatus("🟢 CAM report ready.");
-  } catch (error) { setStatus(error.message); }
+  } catch (error) { if (generation === reportGeneration) setStatus(error.message); }
 }
 async function createCamTemplate(material) {
+  clearReport();
+  document.getElementById("reportButton").disabled = true;
   const label = material === "aluminum" ? "Aluminum" : "Polycarb";
   createButtons.forEach(button => { button.disabled = true; });
   setStatus("Creating " + label + " CAM Studio...");
@@ -53,6 +71,7 @@ async function createCamTemplate(material) {
   } catch (error) {
     setStatus(error.message);
   } finally {
+    document.getElementById("reportButton").disabled = false;
     createButtons.forEach(button => { button.disabled = false; });
   }
 }
@@ -68,7 +87,7 @@ async function updateConnectionStatus(promptRun = false) {
   const data = await call("status");
   if (data?.error) setStatus(data.error);
   else if (data?.connected) {
-    setStatus(promptRun ? "🟢 Press Run to read CAM settings." : "Connected to Onshape.");
+    setStatus(promptRun ? "🟢 Press Run Checker to read CAM settings." : "Connected to Onshape.");
   } else setStatus("Not connected.");
 }
 document.getElementById("statusButton").onclick = () => updateConnectionStatus(false);
@@ -76,8 +95,18 @@ document.getElementById("reportButton").onclick = showCamSettings;
 document.getElementById("createAluminum").onclick = () => createCamTemplate("aluminum");
 document.getElementById("createPolycarb").onclick = () => createCamTemplate("polycarbonate");
 document.getElementById("disconnect").onclick = async () => {
+  clearReport();
   const data = await call("disconnect");
-  reportElement.textContent = "";
   setStatus(data?.error || "Connection removed. Click Connect to connect again.");
 };
+chrome.tabs.onActivated.addListener(() => {
+  clearReport();
+  setStatus("Active tab changed. Click Run Checker to read its settings.");
+});
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (tab.active && (changeInfo.url || changeInfo.status === "loading")) {
+    clearReport();
+    setStatus("Tab changed. Click Run Checker to read its settings.");
+  }
+});
 updateConnectionStatus(true);

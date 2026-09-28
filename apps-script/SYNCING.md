@@ -12,11 +12,11 @@ Use the Google account that owns or can edit the existing Apps Script project.
 4. Add the complete contents of that file as the new repo's Actions secret `CLASPRC_JSON`. Never put this file or its contents in a commit or chat.
 5. In **Settings → Secrets and variables → Actions**, set repository variable `APPS_SCRIPT_DEPLOY_ENABLED` to `true` when this repo should control deployment.
 
-The workflow is gated by that variable. The current production deployment is version 1.62. The next deployment must set `CAM_REPORT_VERSION` to 1.63.
+The workflow is gated by that variable. Check the existing deployment's version before merging backend changes; `CAM_REPORT_VERSION` must equal `1.` followed by the next deployment version. Source version numbers alone do not confirm what is deployed.
 
 ## Each update
 
-Changes to `apps-script/Code.gs`, `CamReport.gs`, or `CallbackIcon.gs` on production `main` start **Sync Apps Script** after deployment is enabled. The workflow confirms the report version equals the next Apps Script deployment version before it updates the existing web app. A green run means the source was synced and a new version was published to the existing `/exec` URL.
+Changes to `apps-script/Code.gs`, `CamReport.gs`, or `CallbackIcon.gs` on production `main` start **Sync Apps Script**. When deployment is enabled, the workflow confirms the report version equals the next Apps Script deployment version before it updates the existing web app. A green run can also mean deployment was gated off; inspect the sync step to confirm whether a version was published to the existing `/exec` URL.
 
 Keep the previous repository's deployment workflow active until the new repo has completed its first successful deployment. Then disable the old repo's push-triggered workflow to prevent two repositories from deploying to the same Apps Script project.
 
