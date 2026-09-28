@@ -214,4 +214,6 @@ test("popup exposes template actions and sends copyTemplate to the background", 
   assert.match(html, /id="createAluminum"/);
   assert.match(html, /id="createPolycarb"/);
   assert.ok(popup.includes('call("copyTemplate"'));
+  assert.ok(popup.includes('chrome.tabs.update(ids.tabId, { url })'));
+  assert.doesNotMatch(popup, /chrome\.tabs\.create\(\{ url \}\)/);
 });
