@@ -7,7 +7,7 @@ The side panel can:
 - Read the active CAM Studio and display a settings report.
 - Copy the team's controlled Aluminum or Polycarbonate CAM Studio template into the active Onshape document.
 
-The report formatter is at Apps Script report version 1.61. The unpacked Chrome extension package is version 0.3.21. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
+The report formatter is at Apps Script report version 1.61. The unpacked Chrome extension package is version 0.3.22. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
 
 ## Source layout
 
@@ -28,7 +28,7 @@ Do not add OAuth credentials, tokens, `.clasprc.json`, or private Onshape data t
 
 For local testing, open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select `apps-script/extension-integrated/`. The extension reuses the existing Apps Script backend and per-browser Onshape connection.
 
-The extension requests Onshape read and write access because the copy buttons create a CAM Studio in the active document. The user chooses which controlled template to copy.
+The extension requests access only to Onshape tabs and the Apps Script backend. It needs Onshape read and write access because the copy buttons create a CAM Studio in the active document. The user chooses which controlled template to copy.
 
 ## Local workstation tools and install log
 
