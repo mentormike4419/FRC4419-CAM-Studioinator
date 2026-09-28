@@ -55,7 +55,7 @@ function doGet(e) {
       userId: profile.id, email: profile.email || ""
     };
     PropertiesService.getScriptProperties().setProperty(connection, JSON.stringify(grant));
-    return callbackPage_("Connection successful", "CLOSE THIS TAB", "Return to CAM Studioinator. In the side panel, click Run to read CAM settings.", { account: profile.email || profile.id, clientId: config.id });
+    return callbackPage_("Connection successful", "CLOSE THIS TAB", "Return to CAM Studioinator. In the side panel, click CAM Check to read CAM settings.", { account: profile.email || profile.id, clientId: config.id });
   } catch (error) {
     return callbackPage_("Connection failed", "Try Connect again", String(error.message));
   }
