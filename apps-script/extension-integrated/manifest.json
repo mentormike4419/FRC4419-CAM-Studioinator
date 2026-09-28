@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
   "name": "FRC4419 CAM Studioinator",
-  "version": "0.3.21",
+  "version": "0.3.22",
   "description": "Create controlled Onshape CAM Studio templates and read their settings through Apps Script.",
   "permissions": [
-    "tabs",
     "storage",
     "sidePanel"
   ],
   "host_permissions": [
+    "https://cad.onshape.com/*",
     "https://script.google.com/*",
     "https://script.googleusercontent.com/*"
   ],
