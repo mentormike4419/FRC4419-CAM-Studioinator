@@ -1,4 +1,4 @@
-# FRC4419 CAM Studioinator (extension v0.3.21)
+# FRC4419 CAM Studioinator (extension v0.3.22)
 
 The Chrome side panel works with the team's Google Apps Script backend to create a controlled Aluminum or Polycarbonate CAM Studio in the active Onshape document and read its settings report.
 
@@ -14,7 +14,7 @@ The Chrome side panel works with the team's Google Apps Script backend to create
 
 Keep all files in this directory together. In Chrome, open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select this folder.
 
-This package uses the existing Apps Script web app URL configured in `background.js`. Do not add Onshape client credentials, tokens, or private document content to extension files.
+This package uses the existing Apps Script web app URL configured in `background.js`. The manifest grants access to the Onshape domain and Apps Script endpoints only. Do not add Onshape client credentials, tokens, or private document content to extension files.
 
 The Chrome Web Store package and this development source may be on different versions until the updated extension is submitted.
 
