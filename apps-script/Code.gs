@@ -1,4 +1,4 @@
-// Current CAM Studio Checker backend: Onshape grant and CAM settings report.
+// FRC4419 CAM Studioinator backend: Onshape grant and CAM settings report.
 // Changes to this production file sync and publish through GitHub Actions.
 // Credentials stay in ONSHAPE_CLIENT_ID and ONSHAPE_CLIENT_SECRET Script Properties.
 const AUTH_ENDPOINT = "https://oauth.onshape.com/oauth/authorize";
@@ -20,7 +20,7 @@ const CAM_TEMPLATE_SOURCES = Object.freeze({
 
 function doGet(e) {
   const p = (e && e.parameter) || {};
-  if (!p.code && !p.error) return callbackPage_("FRC4419 CAM Studio Checker", "Web app ready", "Open CAM Studio, then use the checker side panel to connect or read settings.");
+  if (!p.code && !p.error) return callbackPage_("FRC4419 CAM Studioinator", "Web app ready", "Open CAM Studio, then use the Studioinator side panel to connect or read settings.");
   try {
     if (p.error) throw new Error("Onshape authorization denied.");
     const stateKey = "state:" + (p.state || "");
@@ -55,7 +55,7 @@ function doGet(e) {
       userId: profile.id, email: profile.email || ""
     };
     PropertiesService.getScriptProperties().setProperty(connection, JSON.stringify(grant));
-    return callbackPage_("Connection successful", "CLOSE THIS TAB", "Return to CAM Studio. In the checker side panel, click Status, then Show CAM settings.", { account: profile.email || profile.id, clientId: config.id });
+    return callbackPage_("Connection successful", "CLOSE THIS TAB", "Return to CAM Studioinator. In the side panel, click Run to read CAM settings.", { account: profile.email || profile.id, clientId: config.id });
   } catch (error) {
     return callbackPage_("Connection failed", "Try Connect again", String(error.message));
   }
@@ -222,7 +222,7 @@ function callbackPage_(title, action, detail, technical) {
     : '';
   const page = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FRC4419 CAM Studio Checker — ${html_(title)}</title>
+<title>FRC4419 CAM Studioinator — ${html_(title)}</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:#f2f5f7;color:#182332;font:16px/1.5 Arial,sans-serif}
@@ -243,12 +243,12 @@ h1{font-size:29px;line-height:1.2;margin:18px 0 8px}
 .technical code{overflow-wrap:anywhere}
 @media(max-width:500px){main{margin:16px auto}.brand{padding:17px}.content{padding:24px 18px}h1{font-size:25px}}
 </style></head><body><main><div class="card">
-<div class="brand"><img alt="CAM Studio Checker icon" src="data:image/png;base64,${CALLBACK_ICON_BASE64}">
-<div><strong>FRC4419 CAM Studio Checker</strong><span>Onshape CAM connection</span></div></div>
+<div class="brand"><img alt="CAM Studioinator icon" src="data:image/png;base64,${CALLBACK_ICON_BASE64}">
+<div><strong>FRC4419 CAM Studioinator</strong><span>Onshape CAM connection</span></div></div>
 <div class="content"><div class="status">${symbol} ${html_(title)}</div>
 <h1>${html_(title)}</h1><p class="action">${html_(action)}</p>
 <p class="detail">${html_(detail)}</p>${technicalHtml}</div></div></main></body></html>`;
-  return HtmlService.createHtmlOutput(page).setTitle("FRC4419 CAM Studio Checker");
+  return HtmlService.createHtmlOutput(page).setTitle("FRC4419 CAM Studioinator");
 }
 function html_(value) {
   return String(value).replace(/[&<>"']/g, function (c) {
