@@ -16,7 +16,7 @@ async function activeCamIds() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const match = (tab?.url || "").match(/\/documents\/([0-9a-f]{24})\/w\/([0-9a-f]{24})\/e\/([0-9a-f]{24})/i);
   if (!match) throw new Error("🟡 Open an Onshape CAM Studio tab first.");
-  return { documentId: match[1], workspaceId: match[2], elementId: match[3] };
+  return { tabId: tab.id, documentId: match[1], workspaceId: match[2], elementId: match[3] };
 }
 async function showCamSettings() {
   reportElement.textContent = "";
@@ -43,8 +43,8 @@ async function createCamTemplate(material) {
     if (typeof data.elementId === "string" && /^[0-9a-f]{24}$/i.test(data.elementId)) {
       const url = "https://cad.onshape.com/documents/" + ids.documentId +
         "/w/" + ids.workspaceId + "/e/" + data.elementId;
-      await chrome.tabs.create({ url });
-      setStatus("🟢 " + label + " CAM Studio created and opened in a new tab.");
+      await chrome.tabs.update(ids.tabId, { url });
+      setStatus("🟢 " + label + " CAM Studio created and opened.");
     } else {
       setStatus("🟢 " + label + " CAM Studio copied into this document.");
     }
