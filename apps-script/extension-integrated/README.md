@@ -1,4 +1,4 @@
-# FRC4419 CAM Studioinator (extension v0.3.24)
+# FRC4419 CAM Studioinator (extension v0.3.25)
 
 The Chrome side panel works with the team's Google Apps Script backend to create a controlled Aluminum or Polycarbonate CAM Studio in the active Onshape document and read its settings report.
 
@@ -10,7 +10,7 @@ The side panel displays the installed extension package version and the Apps Scr
 2. Open the extension side panel.
 3. Connect your Onshape account if needed. The extension requests read access for reports and write access to copy a CAM template into the document.
 4. Choose **Create Aluminum CAM** or **Create Polycarb CAM** to copy the team's template. If Onshape returns the copied element ID, the new CAM Studio opens in a tab.
-5. Use **Run** to read the active CAM Studio report. The report shows units in Inch (MM) and Inch/min (MM/min).
+5. Use **CAM Check** to read the active CAM Studio report. The report shows units in Inch (MM) and Inch/min (MM/min).
 
 ## Load unpacked
 
