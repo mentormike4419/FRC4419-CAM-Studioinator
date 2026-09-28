@@ -1,4 +1,4 @@
-# FRC4419 CAM Studioinator (extension v0.3.23)
+# FRC4419 CAM Studioinator (extension v0.3.24)
 
 The Chrome side panel works with the team's Google Apps Script backend to create a controlled Aluminum or Polycarbonate CAM Studio in the active Onshape document and read its settings report.
 

@@ -16,8 +16,8 @@ h2{margin:0;font-size:16px}
 button{cursor:pointer;font:inherit}
 button:disabled{cursor:wait;opacity:.65}
 .controls,.create-controls{display:grid;gap:5px}
-.controls{grid-template-columns:repeat(4,minmax(0,1fr))}
-.create-controls{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:5px}
+.controls{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:5px}
+.create-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
 .controls button,.create-controls button{min-width:0;padding:7px 2px;font-size:12px}
 #reportButton{font-weight:bold}
 #status{margin:9px 0;line-height:1.35}
@@ -28,15 +28,15 @@ button:disabled{cursor:wait;opacity:.65}
 <header>
   <div class="topline"><h2>FRC4419 CAM Studioinator</h2><a href="https://github.com/mentormike4419/FRC4419-CAM-Studioinator/blob/main/apps-script/extension-integrated/README.md" target="_blank" rel="noopener noreferrer" aria-label="How to use" title="How to use">?</a></div>
   <div class="versions"><span id="extensionVersion" title="Chrome extension package version">Extension v—</span><span id="reportVersion" title="Apps Script CAM report version" aria-label="CAM report version">CAM report v—</span></div>
+  <div class="create-controls">
+    <button id="createAluminum">Create Aluminum CAM</button>
+    <button id="createPolycarb">Create Polycarb CAM</button>
+  </div>
   <div class="controls">
     <button id="reportButton">Run</button>
     <button id="connect">Connect</button>
     <button id="statusButton">Status</button>
     <button id="disconnect" title="Remove this browser’s saved Onshape connection. Click Connect to reconnect.">Disconnect</button>
-  </div>
-  <div class="create-controls">
-    <button id="createAluminum">Create Aluminum CAM</button>
-    <button id="createPolycarb">Create Polycarb CAM</button>
   </div>
   <div id="status" role="status">Checking connection...</div>
 </header>
