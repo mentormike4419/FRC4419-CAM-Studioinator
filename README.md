@@ -7,7 +7,7 @@ The side panel can:
 - Read the active CAM Studio and display a settings report.
 - Copy the team's controlled Aluminum or Polycarbonate CAM Studio template into the active Onshape document.
 
-The Apps Script backend is at version 1.62. The unpacked Chrome extension package is version 0.3.23. The extension side panel displays its package version separately from the Apps Script CAM report version. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
+The Apps Script backend is at version 1.62. The unpacked Chrome extension package is version 0.3.24. The extension side panel displays its package version separately from the Apps Script CAM report version. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
 
 ## Source layout
 
