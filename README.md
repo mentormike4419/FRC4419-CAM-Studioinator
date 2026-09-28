@@ -7,7 +7,7 @@ The side panel can:
 - Read the active CAM Studio and display a settings report.
 - Copy the team's controlled Aluminum or Polycarbonate CAM Studio template into the active Onshape document.
 
-The report formatter is at Apps Script report version 1.61. The unpacked Chrome extension package is version 0.3.20. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
+The report formatter is at Apps Script report version 1.61. The unpacked Chrome extension package is version 0.3.21. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
 
 ## Source layout
 
