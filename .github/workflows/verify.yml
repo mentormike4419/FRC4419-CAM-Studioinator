@@ -1,0 +1,34 @@
+name: Verify
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps-script/**
+      - .github/workflows/**
+      - README.md
+  pull_request:
+    paths:
+      - apps-script/**
+      - .github/workflows/**
+      - README.md
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check extension JavaScript syntax
+        run: |
+          node --check apps-script/extension-integrated/background.js
+          node --check apps-script/extension-integrated/popup.js
+      - name: Check extension manifest JSON
+        run: node -e 'JSON.parse(require("fs").readFileSync("apps-script/extension-integrated/manifest.json", "utf8"))'
+      - name: Run tests
+        run: node --test apps-script/tests/*.test.js

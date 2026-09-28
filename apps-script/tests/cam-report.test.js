@@ -217,3 +217,18 @@ test("popup exposes template actions and sends copyTemplate to the background", 
   assert.ok(popup.includes('chrome.tabs.update(ids.tabId, { url })'));
   assert.doesNotMatch(popup, /chrome\.tabs\.create\(\{ url \}\)/);
 });
+
+test("extension keeps tab access limited to Onshape and versions in sync", () => {
+  const manifest = JSON.parse(fs.readFileSync(
+    path.join(appScriptDir, "extension-integrated", "manifest.json"), "utf8"
+  ));
+  const rootReadme = fs.readFileSync(path.resolve(appScriptDir, "..", "README.md"), "utf8");
+  const extensionReadme = fs.readFileSync(
+    path.join(appScriptDir, "extension-integrated", "README.md"), "utf8"
+  );
+
+  assert.ok(!manifest.permissions.includes("tabs"));
+  assert.ok(manifest.host_permissions.includes("https://cad.onshape.com/*"));
+  assert.match(rootReadme, new RegExp("package is version " + manifest.version.replaceAll(".", "\\.") + "\\."));
+  assert.match(extensionReadme, new RegExp("extension v" + manifest.version.replaceAll(".", "\\.") + "\\)"));
+});

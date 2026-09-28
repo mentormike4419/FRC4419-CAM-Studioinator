@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Verify repository tests
+        run: node --test apps-script/tests/*.test.js
       - name: Sync Apps Script source to existing project
         env:
           APPS_SCRIPT_DEPLOY_ENABLED: ${{ vars.APPS_SCRIPT_DEPLOY_ENABLED }}
