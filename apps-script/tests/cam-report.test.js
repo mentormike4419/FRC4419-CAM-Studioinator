@@ -216,6 +216,9 @@ test("popup exposes template actions and sends copyTemplate to the background", 
   assert.ok(popup.includes('call("copyTemplate"'));
   assert.ok(popup.includes('chrome.tabs.update(ids.tabId, { url })'));
   assert.doesNotMatch(popup, /chrome\.tabs\.create\(\{ url \}\)/);
+  assert.match(html, /id="extensionVersion"/);
+  assert.match(html, /id="reportVersion"/);
+  assert.ok(popup.includes('chrome.runtime.getManifest().version'));
 });
 
 test("extension keeps tab access limited to Onshape and versions in sync", () => {
@@ -231,4 +234,15 @@ test("extension keeps tab access limited to Onshape and versions in sync", () =>
   assert.ok(manifest.host_permissions.includes("https://cad.onshape.com/*"));
   assert.match(rootReadme, new RegExp("package is version " + manifest.version.replaceAll(".", "\\.") + "\\."));
   assert.match(extensionReadme, new RegExp("extension v" + manifest.version.replaceAll(".", "\\.") + "\\)"));
+});
+
+test("Apps Script deployment version is validated before source is pushed", () => {
+  const workflow = fs.readFileSync(
+    path.resolve(appScriptDir, "..", ".github", "workflows", "sync-apps-script.yml"), "utf8"
+  );
+  const validation = workflow.indexOf('if [[ "$REPORT_VERSION" != "1.$EXPECTED_VERSION" ]]');
+  const push = workflow.indexOf("clasp push --force");
+
+  assert.ok(validation >= 0, "deployment version validation must be present");
+  assert.ok(push > validation, "source push must follow deployment version validation");
 });
