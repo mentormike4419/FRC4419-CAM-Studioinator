@@ -10,7 +10,12 @@ const report = fs.readFileSync(path.join(appScriptDir, "CamReport.gs"), "utf8");
 const callbackIcon = fs.readFileSync(path.join(appScriptDir, "CallbackIcon.gs"), "utf8");
 
 function makeContext(fetchAll) {
-  const context = { UrlFetchApp: { fetchAll } };
+  const context = {
+    UrlFetchApp: { fetchAll },
+    HtmlService: {
+      createHtmlOutput: html => ({ html, setTitle(title) { this.title = title; return this; } })
+    }
+  };
   vm.createContext(context);
   vm.runInContext(code + "\n" + report + "\n" + callbackIcon, context);
   return context;
@@ -140,6 +145,22 @@ test("extension background no longer forwards the removed check action", () => {
   const background = fs.readFileSync(path.join(appScriptDir, "extension-integrated", "background.js"), "utf8");
   assert.match(background, /"copyTemplate"/);
   assert.doesNotMatch(background, /"check"/);
+});
+
+test("OAuth connection page uses Studioinator branding and tells the user to click Run", () => {
+  const context = makeContext(() => []);
+  const page = context.callbackPage_(
+    "Connection successful",
+    "CLOSE THIS TAB",
+    "Return to CAM Studioinator. In the side panel, click Run to read CAM settings.",
+    { account: "member@example.com", clientId: "test-client" }
+  );
+
+  assert.equal(page.title, "FRC4419 CAM Studioinator");
+  assert.match(page.html, /<title>FRC4419 CAM Studioinator — Connection successful<\/title>/);
+  assert.match(page.html, /<strong>FRC4419 CAM Studioinator<\/strong>/);
+  assert.match(page.html, /click Run to read CAM settings/);
+  assert.doesNotMatch(page.html, /CAM Studio Checker|checker side panel|Show CAM settings/);
 });
 
 
