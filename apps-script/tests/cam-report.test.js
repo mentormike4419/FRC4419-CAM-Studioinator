@@ -25,7 +25,7 @@ function apiResponse(value) {
 
 function makeCam() {
   const documentId = "d".repeat(24);
-  const workspaceId = "w".repeat(24);
+  const workspaceId = "c".repeat(24);
   const elementId = "e".repeat(24);
   const selections = [
     { componentId: "node-a", componentRef: "a".repeat(24), associativityIdBodyId: "part-a" },
@@ -167,7 +167,7 @@ test("Aluminum template copy targets the active document", () => {
   });
 
   const targetDocumentId = "d".repeat(24);
-  const targetWorkspaceId = "w".repeat(24);
+  const targetWorkspaceId = "c".repeat(24);
   const result = context.copyCamTemplate_({
     documentId: targetDocumentId,
     workspaceId: targetWorkspaceId,
@@ -198,7 +198,7 @@ test("template copy rejects an unknown material before calling Onshape", () => {
 
   assert.throws(() => context.copyCamTemplate_({
     documentId: "d".repeat(24),
-    workspaceId: "w".repeat(24),
+    workspaceId: "c".repeat(24),
     elementId: "e".repeat(24),
     material: "titanium"
   }, { accessToken: "test-token" }), /Choose Aluminum or Polycarbonate\./);
