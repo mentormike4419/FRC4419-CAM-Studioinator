@@ -147,19 +147,19 @@ test("extension background no longer forwards the removed check action", () => {
   assert.doesNotMatch(background, /"check"/);
 });
 
-test("OAuth connection page uses Studioinator branding and tells the user to click Run", () => {
+test("OAuth connection page uses Studioinator branding and tells the user to click CAM Check", () => {
   const context = makeContext(() => []);
   const page = context.callbackPage_(
     "Connection successful",
     "CLOSE THIS TAB",
-    "Return to CAM Studioinator. In the side panel, click Run to read CAM settings.",
+    "Return to CAM Studioinator. In the side panel, click CAM Check to read CAM settings.",
     { account: "member@example.com", clientId: "test-client" }
   );
 
   assert.equal(page.title, "FRC4419 CAM Studioinator");
   assert.match(page.html, /<title>FRC4419 CAM Studioinator — Connection successful<\/title>/);
   assert.match(page.html, /<strong>FRC4419 CAM Studioinator<\/strong>/);
-  assert.match(page.html, /click Run to read CAM settings/);
+  assert.match(page.html, /click CAM Check to read CAM settings/);
   assert.doesNotMatch(page.html, /CAM Studio Checker|checker side panel|Show CAM settings/);
 });
 
@@ -235,6 +235,7 @@ test("popup exposes template actions and sends copyTemplate to the background", 
   assert.match(html, /id="createAluminum"/);
   assert.match(html, /id="createPolycarb"/);
   assert.ok(html.indexOf('class="create-controls"') < html.indexOf('class="controls"'));
+  assert.match(html, /<button id="reportButton">CAM Check<\/button>/);
   assert.ok(popup.includes('call("copyTemplate"'));
   assert.ok(popup.includes('chrome.tabs.update(ids.tabId, { url })'));
   assert.doesNotMatch(popup, /chrome\.tabs\.create\(\{ url \}\)/);

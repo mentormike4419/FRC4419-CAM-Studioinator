@@ -12,7 +12,7 @@ Use the Google account that owns or can edit the existing Apps Script project.
 4. Add the complete contents of that file as the new repo's Actions secret `CLASPRC_JSON`. Never put this file or its contents in a commit or chat.
 5. In **Settings → Secrets and variables → Actions**, set repository variable `APPS_SCRIPT_DEPLOY_ENABLED` to `true` when this repo should control deployment.
 
-The workflow is gated by that variable. The migration source reports version 1.61, which is already live. The next deployment must set `CAM_REPORT_VERSION` to 1.62. The initial source migration does not need to redeploy the existing project.
+The workflow is gated by that variable. The current production deployment is version 1.62. The next deployment must set `CAM_REPORT_VERSION` to 1.63.
 
 ## Each update
 
