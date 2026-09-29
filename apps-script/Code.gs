@@ -27,7 +27,12 @@ function doGet(e) {
     const cache = CacheService.getScriptCache();
     const connection = cache.get(stateKey);
     if (!connection) throw new Error("Connection attempt expired or state did not match.");
-    cache.remove(stateKey);
+    withConnectionLock_(function () {
+      if (cache.get("pending:" + connection) !== p.state) {
+        throw new Error("Connection attempt was cancelled. Try Connect again.");
+      }
+      cache.remove(stateKey);
+    });
     const config = oauthConfig_();
     const reply = UrlFetchApp.fetch(TOKEN_ENDPOINT, {
       method: "post", contentType: "application/x-www-form-urlencoded",
@@ -54,8 +59,14 @@ function doGet(e) {
       expiresAt: Date.now() + (Number(token.expires_in || 3600) - 60) * 1000,
       userId: profile.id, email: profile.email || ""
     };
-    PropertiesService.getScriptProperties().setProperty(connection, JSON.stringify(grant));
-    return callbackPage_("Connection successful", "CLOSE THIS TAB", "Return to CAM Studioinator. In the side panel, click CAM Check to read CAM settings.", { account: profile.email || profile.id, clientId: config.id });
+    withConnectionLock_(function () {
+      if (cache.get("pending:" + connection) !== p.state) {
+        throw new Error("Connection attempt was cancelled. Try Connect again.");
+      }
+      PropertiesService.getScriptProperties().setProperty(connection, JSON.stringify(grant));
+      cache.remove("pending:" + connection);
+    });
+    return callbackPage_("Connection successful", "CLOSE THIS TAB", "Return to CAM Studioinator. In the side panel, click Run Checker to read CAM settings.", { account: profile.email || profile.id, clientId: config.id });
   } catch (error) {
     return callbackPage_("Connection failed", "Try Connect again", String(error.message));
   }
@@ -69,7 +80,13 @@ function doPost(e) {
     if (action === "begin") {
       const config = oauthConfig_();
       const state = Utilities.getUuid();
-      CacheService.getScriptCache().put("state:" + state, key, 600);
+      withConnectionLock_(function () {
+        const cache = CacheService.getScriptCache();
+        const previous = cache.get("pending:" + key);
+        if (previous) cache.remove("state:" + previous);
+        cache.put("state:" + state, key, 600);
+        cache.put("pending:" + key, state, 600);
+      });
       return json_({ authorizationUrl: AUTH_ENDPOINT + "?" + form_({
         response_type: "code", client_id: config.id, redirect_uri: callbackUrl_(),
         scope: "OAuth2Read OAuth2Write", state: state
@@ -77,7 +94,13 @@ function doPost(e) {
     }
     const props = PropertiesService.getScriptProperties();
     if (action === "disconnect") {
-      props.deleteProperty(key);
+      withConnectionLock_(function () {
+        const cache = CacheService.getScriptCache();
+        const pending = cache.get("pending:" + key);
+        if (pending) cache.remove("state:" + pending);
+        cache.remove("pending:" + key);
+        props.deleteProperty(key);
+      });
       return json_({ connected: false });
     }
     const stored = props.getProperty(key);
@@ -157,6 +180,7 @@ function copyCamTemplate_(input, grant) {
 }
 
 function refresh_(grant, key) {
+  const originalGrant = JSON.stringify(grant);
   if (!grant.refreshToken) throw new Error("Grant expired without a refresh token.");
   const config = oauthConfig_();
   const response = UrlFetchApp.fetch(TOKEN_ENDPOINT, {
@@ -172,7 +196,21 @@ function refresh_(grant, key) {
   grant.accessToken = next.access_token;
   grant.refreshToken = next.refresh_token || grant.refreshToken;
   grant.expiresAt = Date.now() + (Number(next.expires_in || 3600) - 60) * 1000;
-  PropertiesService.getScriptProperties().setProperty(key, JSON.stringify(grant));
+  withConnectionLock_(function () {
+    const props = PropertiesService.getScriptProperties();
+    if (props.getProperty(key) !== originalGrant) {
+      throw new Error("Connection changed during refresh. Try Run Checker again.");
+    }
+    props.setProperty(key, JSON.stringify(grant));
+  });
+}
+
+// Keep state validation and grant writes atomic, without locking network requests.
+function withConnectionLock_(action) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try { return action(); }
+  finally { lock.releaseLock(); }
 }
 
 function connectionName_(value) {

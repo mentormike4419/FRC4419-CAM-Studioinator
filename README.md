@@ -7,7 +7,7 @@ The side panel can:
 - Read the active CAM Studio and display a settings report.
 - Copy the team's controlled Aluminum or Polycarbonate CAM Studio template into the active Onshape document.
 
-The Apps Script backend is at version 1.63. The unpacked Chrome extension package is version 0.3.25. The extension side panel displays its package version separately from the Apps Script CAM report version. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
+The Apps Script source targets backend version 1.64; deployment is separate from this source version. The unpacked Chrome extension package is version 0.3.26. The extension side panel displays its package version separately from the Apps Script CAM report version. The Chrome Web Store listing may remain on an earlier release until the extension package is submitted separately.
 
 ## Source layout
 
@@ -42,3 +42,4 @@ This log covers the Windows workstation tools used for this project. Versions we
 PowerShell blocked `npm.ps1` because script execution is disabled. The `.cmd` launcher worked, so use `npm.cmd` and `clasp.cmd` from PowerShell. There is no need to change the PowerShell execution policy or rerun the global clasp install when it is already installed.
 
 Use `clasp.cmd login` only when a fresh or renewed clasp credential is needed. Store the resulting `.clasprc.json` contents as the GitHub Actions secret `CLASPRC_JSON`; never commit the credential file or paste its contents into chat.
+
